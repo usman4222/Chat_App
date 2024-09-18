@@ -1,4 +1,5 @@
-import { sign } from "jsonwebtoken"
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
 
 const maxAge = 3 * 24 * 60 * 60 * 100
 

@@ -5,46 +5,98 @@ import { MdEmail } from "react-icons/md";
 import './Auth.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SIGNUP_ROUTE } from "../../utils/constants";
-import { apiClient } from "../../lib/apiClient";
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from "../../utils/constants";
+import { apiClient } from "../../lib/apiClient.js"
+import Spinner from "../../components/Spinner.jsx";
 
 const AuthPage = () => {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSignUpClick = () => {
     setIsSignUpMode(true);
-    toast("Wow so easy!")
   };
 
-  const signinHandler = async () => {
-    if (email == "" || password == "") {
-      toast.error("All field are required")
+  const signinHandler = async (event) => {
+    event.preventDefault();
+    if (email === "" || password === "") {
+      toast.error("All fields are required");
+      return
     }
-  }
 
-  const signupHandler = async () => {
-    if (email == "" || password == "" || confirmPassword == "") {
-      toast.error("All field are required")
-    }
-    if (password != confirmPassword) {
-      toast.error("Password do not matched.")
-    }
     try {
-      const res = await apiClient.post(SIGNUP_ROUTE, { email, password })
-    } catch (error) {
-      console.log(error.message);
+      setLoading(true);
+      const res = await apiClient.post(LOGIN_ROUTE, { email, password });
 
+      toast.success("Login successful!");
+      console.log(res.data);
+      setEmail("")
+      setPassword("")
+    } catch (error) {
+      if (error.response) {
+        console.log("Server Error:", error.response.data);
+        toast.error(error.response.data);
+
+      } else if (error.request) {
+        console.log("Network Error:", error.request);
+        toast.error("Network error. Please check your connection and try again.");
+
+      } else {
+        console.log("Error:", error.message);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  const signupHandler = async (event) => {
+    event.preventDefault();
+
+    if (email === "" || password === "" || confirmPassword === "") {
+      toast.error("All fields are required.");
+      return;
     }
 
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
 
-  }
+    try {
+      setLoading(true);
+      const res = await apiClient.post(SIGNUP_ROUTE, { email, password }, { withCredentials: true });
+
+      toast.success("Signup successful!");
+      console.log(res.data);
+      setEmail("")
+      setPassword("")
+      setConfirmPassword("")
+    } catch (error) {
+      if (error.response) {
+        console.log("Server Error:", error.response.data);
+        toast.error(error.response.data);
+
+      } else if (error.request) {
+        console.log("Network Error:", error.request);
+        toast.error("Network error. Please check your connection and try again.");
+
+      } else {
+        console.log("Error:", error.message);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    }
+    finally {
+      setLoading(false);
+    }
+  };
 
   const handleSignInClick = () => {
     setIsSignUpMode(false);
-    toast.success("Signin!")
   };
 
 
@@ -78,37 +130,12 @@ const AuthPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <input type="submit" value="Login" className="btn solid" />
+              <button type="submit" disabled={loading} className="btn solid">
+                {loading ? <Spinner /> : "Login"}
+              </button>
             </form>
             <form onSubmit={signupHandler} className="sign-up-form">
               <h2 className="title">Sign up</h2>
-              <div className="profile-badge">
-                <div className="profile-pic">
-                  <label
-                    htmlFor="profile-image-upload"
-                    className="circular-image-container"
-                  >
-                    {/* {image ? (
-                    <img
-                      alt="User Pic"
-                      src={image}
-                      className="circular-image"
-                    />
-                  ) : (
-                    <div className="dummy-image">
-                      <i className="fas fa-user"> <FaUser/></i>
-                    </div>
-                  )} */}
-                  </label>
-                  {/* <input
-                    id="profile-image-upload"
-                    className="img-input"
-                    type="file"
-                    accept="image/*"
-                  onChange={avatar.changeHandler}
-                  /> */}
-                </div>
-              </div>
               <div className="input-field">
                 <i className="fas fa-envlope flex items-center">
                   <MdEmail />
@@ -121,10 +148,6 @@ const AuthPage = () => {
                 />
 
               </div>
-              {/* <div className="input-field">
-                    <i className="fas fa-user"><FaUserPen/></i>
-                    <input type="text" placeholder="Bio" />
-                </div> */}
               <div className="input-field">
                 <i className="fas fa-lock flex items-center">
                   <FaLock />
@@ -148,7 +171,9 @@ const AuthPage = () => {
                 />
 
               </div>
-              <input type="submit" className="btn" value="Sign up" />
+              <button type="submit" className="btn" disabled={loading}>
+                {loading ? <Spinner /> : "Sign up"}
+              </button>
             </form>
           </div>
         </div>
