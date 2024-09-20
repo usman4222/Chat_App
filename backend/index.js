@@ -4,6 +4,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
 import authRoutes from "./routes/AuthRoute.js"
+import userRoutes from "./routes/UserRoutes.js"
 
 dotenv.config()
 
@@ -21,6 +22,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use('/api/auth', authRoutes)
+app.use('/api/user', userRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is runnning on PORT ${PORT}`);

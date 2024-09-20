@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "../../utils/constants";
 import { apiClient } from "../../lib/apiClient.js"
 import Spinner from "../../components/Spinner.jsx";
+import { useNavigate } from "react-router-dom"
+import { appStore } from "../../store/index.jsx";
 
 const AuthPage = () => {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
@@ -15,6 +17,8 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const { setUserInfo } = appStore()
 
   const handleSignUpClick = () => {
     setIsSignUpMode(true);
@@ -35,6 +39,15 @@ const AuthPage = () => {
       console.log(res.data);
       setEmail("")
       setPassword("")
+      if (res.data.user.id) {
+        setUserInfo(res.data.user)
+        if (res.data.user.profileSetup) {
+          navigate("/chat")
+        }
+        else {
+          navigate('/profile')
+        }
+      }
     } catch (error) {
       if (error.response) {
         console.log("Server Error:", error.response.data);
@@ -76,6 +89,10 @@ const AuthPage = () => {
       setEmail("")
       setPassword("")
       setConfirmPassword("")
+      if (res.status === 201) {
+        setUserInfo(res.data.user)
+        navigate("/profile")
+      }
     } catch (error) {
       if (error.response) {
         console.log("Server Error:", error.response.data);
