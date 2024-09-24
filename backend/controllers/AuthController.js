@@ -52,7 +52,10 @@ export const login = async (req, res, next) => {
             return res.status(400).send("Email or Password not Valid")
         }
         const maxAge = 3 * 24 * 60 * 60 * 1000;
-        res.cookie("jwt", createToken(email, user.id), {
+        const token = createToken(email, user.id)
+        console.log("This is token",token);
+        
+        res.cookie("jwt", token,  {
             maxAge,
             secure: true,
             sameSite: "None"
@@ -74,32 +77,3 @@ export const login = async (req, res, next) => {
         return res.status(500).send("Internel server error")
     }
 }
-
-
-
-export const getUserData = async (req, res) => {
-
-    try {
-        const userData = await User.findById(req.userId)
-
-        if (!userData) {
-            return res.status(404).send("User not found with this ID")
-        }
-
-        return res.status(200).json({
-            id: userData.id,
-            email: userData.email,
-            profileSetup: userData.profileSetup,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            image: userData.image,
-            color: userData.color,
-            message: { json: "User gets successfully" }
-        })
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send("Internel server error")
-
-    }
-} 
