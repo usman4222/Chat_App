@@ -28,15 +28,15 @@ function ProfilePage() {
   // const imageUrl = `${HOST}/uploads/profiles/${userInfo.image}`;
   // console.log(imageUrl);
 
-  console.log(userInfo.image);
+  // console.log(profileSetup);
 
   useEffect(() => {
-    if (userInfo.profileSetup) {
+    if (userInfo && userInfo.profileSetup) {
       setFirstName(userInfo.firstName);
       setLastName(userInfo.lastName);
       setSelectedColor(userInfo.color);
     }
-    if (userInfo.image) {
+    if (userInfo && userInfo.image) {
       setImage(`${HOST}/${userInfo.image}`);
     }
   }, [userInfo]);
@@ -154,7 +154,7 @@ function ProfilePage() {
                   >
                     {firstName
                       ? firstName.split("").shift()
-                      : userInfo.email.split("").shift()}
+                      : userInfo && userInfo.email.split("").shift()}
                   </div>
                 </div>
               )}
@@ -179,7 +179,7 @@ function ProfilePage() {
           </div>
 
           <h1 className="font-bold border-b border-gray-300 text-[1.1rem] text-center pt-2 px-5">
-            {userInfo.email}{" "}
+          {userInfo?.email}{" "}
             <span className="font-normal text-[0.95rem] text-gray-500"></span>
           </h1>
           <div className="px-10">

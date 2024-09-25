@@ -11,8 +11,11 @@ const ChatPage = () => {
   const { userInfo } = appStore();
   const navigate = useNavigate();
 
+  console.log(userInfo?.profileSetup);
+  
+
   useEffect(() => {
-    if (!userInfo.profileSetup) {
+    if (!userInfo || !userInfo.profileSetup) {
       toast("Please setup profile to continue...");
       navigate("/profile");
     }
@@ -22,7 +25,7 @@ const ChatPage = () => {
       <ToastContainer />
       <div className="flex h-[100vh] text-white overflow-hidden">
         <ContactContainer />
-        <ChatContainer />
+        {/* <ChatContainer /> */}
         {/* <EmptyChatContainer /> */}
       </div>
     </>

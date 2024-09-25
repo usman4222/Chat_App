@@ -53,9 +53,9 @@ export const login = async (req, res, next) => {
         }
         const maxAge = 3 * 24 * 60 * 60 * 1000;
         const token = createToken(email, user.id)
-        console.log("This is token",token);
-        
-        res.cookie("jwt", token,  {
+        console.log("This is token", token);
+
+        res.cookie("jwt", token, {
             maxAge,
             secure: true,
             sameSite: "None"
@@ -72,6 +72,20 @@ export const login = async (req, res, next) => {
                 message: { json: "User login successfully" }
             }
         })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send("Internel server error")
+    }
+}
+
+
+
+export const logout = async (req, res) => {
+    try {
+
+        res.cookie("jwt", "", { maxAge: 1, secure: true, sameSite: "None" })
+
+        return res.status(200).json("User logout successfully.")
     } catch (error) {
         console.log(error);
         return res.status(500).send("Internel server error")

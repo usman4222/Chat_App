@@ -1,20 +1,42 @@
 import React from "react";
 import { appStore } from "../../../../../../store";
-import { HOST } from "../../../../../../utils/constants";
+import { HOST, LOGIN_ROUTE, LOGOUT_ROUTE } from "../../../../../../utils/constants";
 import { getColor } from "../../../../../../utils/colors";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { FiEdit2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { IoLogOut, IoPower } from "react-icons/io5";
+import { apiClient } from "../../../../../../lib/apiClient.js";
+import { toast } from "react-toastify";
 
 const ProfileInfo = () => {
-  const { userInfo } = appStore();
+  const { userInfo, setUserInfo } = appStore();
   const navigate = useNavigate();
 
-  const logout = async () =>{
+  const logout = async () => {
+    try {
+      const res = await apiClient.post(
+        LOGOUT_ROUTE,
+        {},
+        { withCredentials: true }
+      );
+  
+      if (res.status === 200) {
+        setUserInfo(null);
+        toast.success("User Logout Successfully.");
+  
 
-  }
+        setTimeout(() => {
+          navigate("/auth");
+        }, 100); 
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+      toast.error("Logout failed. Please try again.");
+    }
+  };
+  
 
   return (
     <div className="absolute bottom-0 h-16 flex items-center justify-between px-10 w-full bg-[#2a2b33]">
