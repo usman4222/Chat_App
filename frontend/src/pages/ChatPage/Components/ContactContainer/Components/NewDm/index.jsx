@@ -109,7 +109,7 @@ const NewDm = () => {
                         <li
                           key={contact.id}
                           onClick={() => selectNewConatc(contact)}
-                          className="flex justify-between items-center p-2 border-b border-gray-200 rounded-md"
+                          className="flex justify-between items-center p-2 border-b border-gray-200 rounded-md hover:cursor-pointer"
                         >
                           <div className="flex items-center gap-5">
                             <div>
