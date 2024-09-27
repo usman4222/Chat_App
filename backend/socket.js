@@ -13,24 +13,25 @@ export const setupSocket = (server) => {
 
   const disconnect = (socket) => {
     console.log(`Client Disconnected: ${socket.id}`);
-    for (const [userId, socketId] of userSocketmap.entries()) {
-      if (socketId === socket.id) {
-        userSocketmap.delete(userId);
-        break;
-      }
+    for(const[userId, socketId] of userSocketmap.entries()){
+        if(socketId === socket.id){
+            userSocketmap.delete(userId)
+            break
+        }
     }
+    
   };
 
   io.on("connection", (socket) => {
-    const userId = socket.handshake.query.userId;
-    console.log(`User connected: ${userId} with socket ID: ${socket.id}`);
-
+    const userId = socket.handShake.query.userId;
+    
     if (userId) {
       userSocketmap.set(userId, socket.id);
-    } else {
-      console.log("User ID not provided during connection");
-    }
+      console.log(`User contected : ${userId} with socket ID: ${socket.id}`);
 
+    } else {
+      console.log("user id not provided during co0nnetion");
+    }
     socket.on("disconnect", () => disconnect(socket));
   });
 };

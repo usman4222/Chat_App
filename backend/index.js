@@ -7,7 +7,6 @@ import authRoutes from "./routes/AuthRoute.js"
 import userRoutes from "./routes/UserRoutes.js"
 import contactsRoutes from "./routes/ContactRoute.js"
 import { setupSocket } from "./socket.js"
-import { createServer } from "http"; 
 
 dotenv.config()
 
@@ -29,9 +28,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/contacts', contactsRoutes)
 
-const server = createServer(app);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is runnning on PORT ${PORT}`);
 
 })
