@@ -53,7 +53,7 @@ export const login = async (req, res, next) => {
         }
         const maxAge = 3 * 24 * 60 * 60 * 1000;
         const token = createToken(email, user.id)
-        console.log("This is token", token);
+        // console.log("This is token", token);
 
         res.cookie("jwt", token, {
             maxAge,
