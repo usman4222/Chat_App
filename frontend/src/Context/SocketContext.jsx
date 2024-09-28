@@ -6,31 +6,48 @@ import { HOST } from "../utils/constants";
 const SocketContext = createContext(null);
 
 export const useSocket = () => {
-  return useContext(SocketContext);
+    return useContext(SocketContext);
 };
 
 export const SocketProvider = ({ children }) => {
-  const socket = useRef();
-  const { userInfo } = appStore();
+    const socket = useRef();
+    const { userInfo } = appStore();
 
-  useEffect(() => {
-    if (userInfo) {
-      socket.current = io(HOST, {
-        withCredentials: true,
-        query: { userId: userInfo.id },
-      });
-      socket.current.on("connect", () => {
-        console.log("Connected to socket server");
-      });
-      return () => {
-        socket.current.disconnect();
-      };
-    }
-  }, [userInfo]);
+    useEffect(() => {
+        if (userInfo) {
+            socket.current = io(HOST, {
+                withCredentials: true,
+                query: { userId: userInfo.id },
+            });
+            socket.current.on("connect", () => {
+                console.log("Connected to socket server");
+            });
 
-  return (
-    <SocketContext.Provider value={socket.current}>
-      {children}
-    </SocketContext.Provider>
-  );
+            const handleReceiveMessage = (message) => {
+
+                const { selectedChatType, selectedChatData, addMessage } = appStore.getState()
+
+                if (selectedChatType !== undefined &&
+                    (selectedChatData._id === message.sender._id ||
+                        selectedChatData._id === message.recipient._id)) {
+                    console.log("msg rec", message);
+
+                    addMessage(message)
+                }
+
+            }
+
+            socket.current.on("recieveMessage", handleReceiveMessage)
+
+            return () => {
+                socket.current.disconnect();
+            };
+        }
+    }, [userInfo]);
+
+    return (
+        <SocketContext.Provider value={socket.current}>
+            {children}
+        </SocketContext.Provider>
+    );
 };

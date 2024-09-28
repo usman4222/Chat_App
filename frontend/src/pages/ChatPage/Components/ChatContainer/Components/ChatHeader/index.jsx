@@ -34,9 +34,13 @@ const ChatHeader = () => {
             )}
           </div>
           <div>
-            {selectedChatType === "contact" ?
-              `${selectedChatData.firstName} ${selectedChatData.lastName}` : selectedChatData.email}
+            {selectedChatType === "contact"
+              ? (selectedChatData.firstName && selectedChatData.lastName
+                ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
+                : selectedChatData.email)
+              : selectedChatData.email}
           </div>
+
         </div>
         <div className="flex items-center justify-center  gap-5">
           <button

@@ -33,8 +33,6 @@ const NewDm = () => {
         );
         if (res.status === 200 && res.data.contacts) {
           setSearchContact(res.data.contacts);
-        } else {
-          setSearchContact([]);
         }
       } else {
         setSearchContact([]);
@@ -44,7 +42,7 @@ const NewDm = () => {
     }
   };
 
-  const selectNewConatc = async (contact) => {
+  const selectNewConatct = async (contact) => {
     setOpenNewContactModal(false);
     setSelectedChatType("contact")
     setSelectedChatData(contact)
@@ -108,7 +106,7 @@ const NewDm = () => {
                       {searchedContact.map((contact) => (
                         <li
                           key={contact.id}
-                          onClick={() => selectNewConatc(contact)}
+                          onClick={() => selectNewConatct(contact)}
                           className="flex justify-between items-center p-2 border-b border-gray-200 rounded-md hover:cursor-pointer"
                         >
                           <div className="flex items-center gap-5">

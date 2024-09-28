@@ -7,7 +7,7 @@ import authRoutes from "./routes/AuthRoute.js"
 import userRoutes from "./routes/UserRoutes.js"
 import contactsRoutes from "./routes/ContactRoute.js"
 import setupSocket from "./socket.js"
-
+ 
 dotenv.config()
 
 const app = express()
