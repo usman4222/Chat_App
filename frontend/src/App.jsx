@@ -12,38 +12,36 @@ const ChatPage = lazy(() => import("./pages/ChatPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 
 function App() {
-  const [loading, setloading] = useState(true)
-  const { userInfo, setUserInfo } = appStore()
+  const [loading, setloading] = useState(true);
+  const { userInfo, setUserInfo } = appStore();
 
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const res = await apiClient.get(USERINFO_ROUTE, { withCredentials: true })
+        const res = await apiClient.get(USERINFO_ROUTE, {
+          withCredentials: true,
+        });
         console.log(res);
         if (res.status === 200 && res.data.id) {
-          setUserInfo(res.data)
-        }
-        else {
-          setUserInfo(undefined)
+          setUserInfo(res.data);
+        } else {
+          setUserInfo(undefined);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setloading(false);
       }
-      finally {
-        setloading(false)
-      }
-    }
+    };
     if (!userInfo) {
-      getUserData()
+      getUserData();
+    } else {
+      setloading(false);
     }
-    else {
-      setloading(false)
-    }
-  }, [userInfo, setUserInfo])
-
+  }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -64,7 +62,7 @@ function App() {
           element={
             <Suspense fallback={<div>Loading...</div>}>
               <ProtectedRoute>
-                <ChatPage />
+              <ChatPage />
               </ProtectedRoute>
             </Suspense>
           }
@@ -93,4 +91,5 @@ function App() {
   );
 }
 
-export default App; Spinner
+export default App;
+Spinner;
