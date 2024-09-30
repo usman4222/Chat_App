@@ -51,11 +51,11 @@ export const login = async (req, res, next) => {
         if (!auth) {
             return res.status(400).send("Email or Password not Valid")
         }
-        const maxAge = 3 * 24 * 60 * 60 * 1000;
         const token = createToken(email, user.id)
-        // console.log("This is token", token);
 
-        res.cookie("jwt", token, {
+        const maxAge = 3 * 24 * 60 * 60 * 1000;
+        res.cookie("jwt", createToken(email, user.id), {
+            httpOnly: true,
             maxAge,
             secure: true,
             sameSite: "None"

@@ -1,5 +1,6 @@
 import User from "../models/AuthModel.js";
 import { renameSync, unlinkSync } from "fs"
+import path from 'path';
 
 export const getUserData = async (req, res) => {
 
@@ -61,20 +62,20 @@ export const updateUserProfile = async (req, res) => {
 
 
 export const addProfileImage = async (req, res) => {
-
     if (!req.file) {
         return res.status(400).send("Image is required");
     }
 
     const date = Date.now();
-    const fileName = `uploads/profiles/${date}${req.file.originalname}`;
+    const fileName = `${date}-${req.file.originalname}`; 
+    const filePath = path.join('uploads/profiles', fileName); 
 
-    renameSync(req.file.path, fileName);
+    renameSync(req.file.path, filePath);
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
             req.userId,
-            { image: fileName },
+            { image: filePath }, 
             { new: true, runValidators: true }
         );
 
@@ -83,14 +84,13 @@ export const addProfileImage = async (req, res) => {
         }
 
         return res.status(200).json({
-            image: updatedUser.image
+            image: updatedUser.image 
         });
     } catch (error) {
         console.error(error);
         return res.status(500).send("Server error");
     }
 };
-
 
 export const delProfileImage = async (req, res) => {
     try {

@@ -33,7 +33,7 @@ const AuthPage = () => {
 
     try {
       setLoading(true);
-      const res = await apiClient.post(LOGIN_ROUTE, { email, password });
+      const res = await apiClient.post(LOGIN_ROUTE, { email, password }, { withCredentials: true });
 
       toast.success("Login successful!");
       console.log(res.data);

@@ -91,13 +91,16 @@ function ProfilePage() {
     if (file) {
       const formData = new FormData();
       formData.append("profileImage", file);
-
+  
       try {
         const res = await apiClient.post(PROFILE_IMAGE_ROUTE, formData, {
           withCredentials: true,
         });
         if (res.status === 200 && res.data.image) {
+          // Ensure this matches the correct structure returned from your backend
           setUserInfo({ ...userInfo, image: res.data.image });
+          // Update the image URL to reflect the new image
+          setImage(`${HOST}/${userInfo.image}`);
           toast.success("Image updated successfully.");
         }
       } catch (error) {
@@ -111,6 +114,7 @@ function ProfilePage() {
       }
     }
   };
+  
 
   const handleDeleteImage = async (e) => {
     try {
