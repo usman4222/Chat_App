@@ -11,7 +11,15 @@ const MessageContainer = () => {
   const scrollRef = useRef();
   const [showImage, setshowImage] = useState(false)
   const [imageUrl, setimageUrl] = useState(null)
-  const { selectedChatData, selectedChatType, userInfo, selectedChatMessage, setSelectedChatMessage } = appStore();
+  const {
+    selectedChatData,
+    selectedChatType,
+    userInfo,
+    selectedChatMessage,
+    setSelectedChatMessage,
+    setFileDownloadingProgress,
+    setIsDownloading
+  } = appStore();
 
   useEffect(() => {
 
@@ -52,9 +60,17 @@ const MessageContainer = () => {
 
 
   const downloadFile = async (filePath) => {
+    setIsDownloading(true)
+    setFileDownloadingProgress(0)
     const url = `${HOST}/${filePath}`;
     try {
-      const res = await apiClient.get(url, { responseType: "blob" });
+      const res = await apiClient.get(url, {
+        responseType: "blob", onDownloadProgress: (ProgressEvent) => {
+          const { loaded, total } = ProgressEvent
+          const percentCompleted = Math.round((loaded * 100) / total)
+          setFileDownloadingProgress(percentCompleted)
+        }
+      });
 
       const urlBlob = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
@@ -64,6 +80,8 @@ const MessageContainer = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(urlBlob);
+      setIsDownloading(false)
+      setFileDownloadingProgress(0)
     } catch (error) {
       console.error("Error downloading file:", error);
     }
