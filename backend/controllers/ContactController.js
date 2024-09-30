@@ -39,7 +39,7 @@ export const getContactsForDMList = async (req, res) => {
     userId = new mongoose.Types.ObjectId(userId);
 
     const contacts = await Message.aggregate([
-      { 
+      {
         $match: {
           $or: [{ sender: userId }, { recipient: userId }],
         },
@@ -68,7 +68,7 @@ export const getContactsForDMList = async (req, res) => {
         },
       },
       {
-        $unwind: "$contactInfo", 
+        $unwind: "$contactInfo",
       },
       {
         $project: {
@@ -89,6 +89,24 @@ export const getContactsForDMList = async (req, res) => {
     return res.status(200).json({ contacts });
   } catch (error) {
     console.error("Search error:", error);
+    return res.status(500).send("Internal server error");
+  }
+};
+
+
+
+
+export const getAllContacts = async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: res.userId } }, "firstName lastTime email _id")
+
+    const contacts = users.map((user) => ({
+      label: user.firstName ? `${user.firstName} ${user.lastName}` : user.email
+    }))
+
+    return res.status(200).json({ contacts });
+  } catch (error) {
+    console.error("Get all users error:", error);
     return res.status(500).send("Internal server error");
   }
 };
