@@ -32,7 +32,6 @@ export const SearchContacts = async (req, res) => {
   }
 };
 
-
 export const getContactsForDMList = async (req, res) => {
   try {
     let { userId } = req;
@@ -82,7 +81,7 @@ export const getContactsForDMList = async (req, res) => {
         },
       },
       {
-        $sort: { lastMessageTime: -1 }
+        $sort: { lastMessageTime: -1 },
       },
     ]);
 
@@ -93,16 +92,21 @@ export const getContactsForDMList = async (req, res) => {
   }
 };
 
-
-
-
 export const getAllContacts = async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: res.userId } }, "firstName lastTime email _id")
+    const users = await User.find(
+      { _id: { $ne: res.userId } },
+      "firstName lastName email _id"
+    );
 
     const contacts = users.map((user) => ({
-      label: user.firstName ? `${user.firstName} ${user.lastName}` : user.email
-    }))
+      label: user.firstName
+        ? user.lastName
+          ? `${user.firstName} ${user.lastName}`
+          : user.firstName
+        : user.email,
+      value: user._id,
+    }));
 
     return res.status(200).json({ contacts });
   } catch (error) {

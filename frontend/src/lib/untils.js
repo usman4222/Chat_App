@@ -9,3 +9,7 @@ export const animationDefaultOption = {
         preserveAspectRatio: 'xMidYMid slice'
     }
 }
+
+export const cn = (...classes) => {
+    return classes.filter(Boolean).join(' ');
+  };

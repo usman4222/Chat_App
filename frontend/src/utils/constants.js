@@ -16,6 +16,7 @@ export const DELETE_IMAGE_ROUTE = `${USER_ROUTES}/deleteimage`
 
 export const SEARCH_CONTACT_ROUTE = `${CONTACT_ROUTES}/searchcontact`
 export const GET_CONTACT_FOR_DM = `${CONTACT_ROUTES}/getcontactfordm`
+export const GET_ALL_CONTACTS = `${CONTACT_ROUTES}/getallcontacts`
 
 export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/getmessages`
 export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/uploadfile`

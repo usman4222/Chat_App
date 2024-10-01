@@ -6,6 +6,7 @@ import { apiClient } from "../../../../lib/apiClient";
 import { GET_CONTACT_FOR_DM } from "../../../../utils/constants";
 import { appStore } from "../../../../store";
 import ContactList from "../../../../components/ContactList";
+import CreateGroup from "./CreateGroup";
 
 
 const ContactContainer = () => {
@@ -45,6 +46,7 @@ const ContactContainer = () => {
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
           <Title text="Channels" />
+          <CreateGroup/>
         </div>
       </div>
       <ProfileInfo />
