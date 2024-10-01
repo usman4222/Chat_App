@@ -8,26 +8,24 @@ import { appStore } from "../../../../store";
 import ContactList from "../../../../components/ContactList";
 import CreateGroup from "./CreateGroup";
 
-
 const ContactContainer = () => {
-
-  const { setDirectMessagesContacts, directMessagesContacts } = appStore()
-
+  const { setDirectMessagesContacts, directMessagesContacts, groups } =
+    appStore();
 
   useEffect(() => {
     const getContacts = async () => {
-      const res = await apiClient.get(GET_CONTACT_FOR_DM, { withCredentials: true })
+      const res = await apiClient.get(GET_CONTACT_FOR_DM, {
+        withCredentials: true,
+      });
       console.log("COntacts", res);
 
       if (res.data.contacts) {
         setDirectMessagesContacts(res.data.contacts);
-
       }
-    }
+    };
 
-    getContacts()
-  }, [])
-
+    getContacts();
+  }, []);
 
   return (
     <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
@@ -46,7 +44,10 @@ const ContactContainer = () => {
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
           <Title text="Channels" />
-          <CreateGroup/>
+          <CreateGroup />
+        </div>
+        <div className="max-w-[38vh] overflow-y-auto scrollbar-hidden">
+          <ContactList contacts={groups} isChannel={true} />
         </div>
       </div>
       <ProfileInfo />

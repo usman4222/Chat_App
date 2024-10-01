@@ -4,6 +4,7 @@ export const AUTH_ROUTES = "api/auth"
 export const USER_ROUTES = "api/user"
 export const CONTACT_ROUTES = "/api/contacts"
 export const MESSAGES_ROUTES = "api/messages"
+export const GROUP_ROUTES = "api/group"
 
 export const SIGNUP_ROUTE = `${AUTH_ROUTES}/signup`
 export const LOGIN_ROUTE = `${AUTH_ROUTES}/login`
@@ -20,4 +21,6 @@ export const GET_ALL_CONTACTS = `${CONTACT_ROUTES}/getallcontacts`
 
 export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/getmessages`
 export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/uploadfile`
+
+export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/creategroup`
 

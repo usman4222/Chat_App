@@ -9,16 +9,20 @@ import {
 } from "@headlessui/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { apiClient } from "../../../../../lib/apiClient";
-import { GET_ALL_CONTACTS } from "../../../../../utils/constants";
+import {
+  CREATE_GROUP_ROUTE,
+  GET_ALL_CONTACTS,
+} from "../../../../../utils/constants";
 import { appStore } from "../../../../../store";
 
 const CreateGroup = () => {
   const [openNewGroupModal, setOpenNewGroupModal] = useState(false);
   const [searchedContact, setSearchContact] = useState([]);
-  const { setSelectedChatType, setSelectedChatData } = appStore();
+  const { setSelectedChatType, setSelectedChatData, addGroup } = appStore();
   const [allContacts, setAllContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState([]);
   const [groupName, setGroupName] = useState("");
+  const [newGroupModal, setNewGroupModal] = useState(false);
 
   useEffect(() => {
     const getContacts = async () => {
@@ -47,7 +51,26 @@ const CreateGroup = () => {
   };
 
   const createGroup = async () => {
-    // Implement group creation logic here
+    try {
+      if (groupName.length > 0 && selectedContact.length > 0) {
+        const res = await apiClient.post(
+          CREATE_GROUP_ROUTE,
+          {
+            name: groupName,
+            members: selectedContact.map((contact) => contact.value),
+          },
+          { withCredentials: true }
+        );
+        if (res.status === 201) {
+          setGroupName("");
+          setSearchContact([]);
+          setNewGroupModal(false);
+          addGroup(res.data.group);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
