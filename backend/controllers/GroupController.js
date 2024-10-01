@@ -1,7 +1,7 @@
-import User from "../models/AuthModel";
-import Group from "../models/GroupModel";
+import User from "../models/AuthModel.js";
+import Group from "../models/GroupModel.js";
 
-export const logout = async (req, res) => {
+export const createGroup = async (req, res) => {
   try {
     const { name, members } = req.body;
 

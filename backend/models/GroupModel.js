@@ -21,7 +21,7 @@ const groupSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.ObjectId,
       ref: "Messages",
-      required: fasle,
+      required: false,
     },
   ],
   createdAt: {

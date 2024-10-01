@@ -8,6 +8,7 @@ import userRoutes from "./routes/UserRoutes.js"
 import contactsRoutes from "./routes/ContactRoute.js"
 import setupSocket from "./socket.js"
 import messagesRoutes from "./routes/MessagesRoutes.js"
+import groupRoutes from "./routes/GroupRoute.js"
  
 dotenv.config()
 
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/contacts', contactsRoutes)
 app.use('/api/messages', messagesRoutes)
+app.use('/api/group', groupRoutes)
 
 
 const server = app.listen(PORT, () => {
