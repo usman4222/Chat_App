@@ -28,19 +28,34 @@ const MessageBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [emojiRef]);
 
-  const handleSendMessage = async () => {
+const handleSendMessage = async () => {
     console.log("message");
-    if (selectedChatType === "contact") {
-      socket.emit("sendMessage", {
-        sender: userInfo.id,
-        content: message,
-        recipient: selectedChatData._id,
-        messageType: "text",
-        fileUrl: undefined
-      })
-      setMessage("");
+    if (!socket) {
+        console.error("Socket is not available");
+        return; // Exit the function if socket is not available
     }
-  };
+
+    if (selectedChatType === "contact") {
+        socket.emit("sendMessage", {
+            sender: userInfo.id,
+            content: message,
+            recipient: selectedChatData._id,
+            messageType: "text",
+            fileUrl: undefined,
+        });
+        setMessage("");
+    } else if (selectedChatType === "channel") {
+        socket.emit("send-group-message", {
+            sender: userInfo.id,
+            content: message,
+            messageType: "text",
+            fileUrl: undefined,
+            groupId: selectedChatData._id,
+        });
+        setMessage("");
+    }
+};
+
 
   const handleAttachmentClick = () => {
     if (fileInputRef.current) {
@@ -72,6 +87,15 @@ const MessageBar = () => {
               recipient: selectedChatData._id,
               messageType: "file",
               fileUrl: res.data.filePath
+            })
+          }
+          else if (selectedChatType === "channel") {
+            socket.emit("send-group-message", {
+              sender: userInfo.id,
+              content: undefined,
+              messageType: "file",
+              fileUrl: res.data.filePath,
+              groupId: selectedChatData._id
             })
           }
         }
