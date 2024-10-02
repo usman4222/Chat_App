@@ -12,28 +12,33 @@ const ChatHeader = () => {
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex justify-between items-center pc-20">
       <div className="flex items-center gap-5 w-full justify-between px-10">
         <div className="flex gap-3 items-center justify-center">
-          <div>
-            {selectedChatData.image ? (
-              <img
-                src={`${HOST}/${selectedChatData.image}`}
-                alt="Profile"
-                className="border border-[#000] h-12 w-12 rounded-full"
-              />
-            ) : (
-              <div>
-                <div
-                  className={`uppercase h-12 w-12 text-2xl border-[1px] text-green-500 flex justify-center items-center rounded-full ${getColor(
-                    selectedColor
-                  )}`}
-                >
-                  {selectedChatData.firstName
-                    ? selectedChatData.firstName.split("").shift()
-                    : selectedChatData.email.split("").shift()}
+          {selectedChatType === "contact" ? (
+            <div>
+              {selectedChatData.image ? (
+                <img
+                  src={`${HOST}/${selectedChatData.image}`}
+                  alt="Profile"
+                  className="border border-[#000] h-12 w-12 rounded-full"
+                />
+              ) : (
+                <div>
+                  <div
+                    className={`uppercase h-12 w-12 text-2xl border-[1px] text-green-500 flex justify-center items-center rounded-full ${getColor(
+                      selectedColor
+                    )}`}
+                  >
+                    {selectedChatData.firstName
+                      ? selectedChatData.firstName.split("").shift()
+                      : selectedChatData.email.split("").shift()}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <div className='bg-[#ffffff22] h-10 w-10 rounded-full flex justify-center items-center'>#</div>
+          )}
           <div>
+            {selectedChatType === "channel" && selectedChatData.name}
             {selectedChatType === "contact"
               ? (selectedChatData.firstName && selectedChatData.lastName
                 ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
