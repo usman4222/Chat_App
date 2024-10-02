@@ -40,30 +40,32 @@ const ContactList = ({ contacts, isChannel = false }) => {
                 >
                     <div className='flex gap-5 items-center justify-start text-neutral-300'>
                         <div>
-                            {contact.image ? (
-                                <img
-                                    src={`${HOST}/${contact.image}`}
-                                    alt='Profile'
-                                    className='border border-[#000] h-10 w-10 rounded-full'
-                                />
+                            {isChannel ? (
+                                <div className='bg-[#ffffff22] h-10 w-10 rounded-full flex justify-center items-center'>#</div>
                             ) : (
-                                <div>
-                                    <div
-                                        className={`${selectedChatData && selectedChatData._id === contact._id
-                                            ? "bg-[ffffff22] border border-white/70"
-                                            : getColor(selectedColor)} 
-    uppercase h-10 w-10 text-lg border-[1px] text-green-500 flex justify-center items-center rounded-full`}
-                                    >
-                                        {contact.firstName
-                                            ? contact.firstName.charAt(0)
-                                            : contact.email}
+                                contact.image ? (
+                                    <img
+                                        src={`${HOST}/${contact.image}`}
+                                        alt='Profile'
+                                        className='border border-[#000] h-10 w-10 rounded-full'
+                                    />
+                                ) : (
+                                    <div>
+                                        <div
+                                            className={`${selectedChatData && selectedChatData._id === contact._id
+                                                    ? "bg-[#ffffff22] border border-white/70"
+                                                    : getColor(selectedColor)
+                                                } 
+          uppercase h-10 w-10 text-lg border-[1px] text-green-500 flex justify-center items-center rounded-full`}
+                                        >
+                                            {contact.firstName
+                                                ? contact.firstName.charAt(0)
+                                                : contact.email.charAt(0)}
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             )}
                         </div>
-                        {
-                            isChannel && <div className='bg-[ffffff22] h-10 w-10 rounded-full flex justify-center items-center'>#</div>
-                        }
                         {
                             isChannel ? <span>{contact.name}</span> : <span>{`${contact.firstName} ${contact.lastName}`}</span>
                         }

@@ -20,7 +20,8 @@ export const GET_CONTACT_FOR_DM = `${CONTACT_ROUTES}/getcontactfordm`
 export const GET_ALL_CONTACTS = `${CONTACT_ROUTES}/getallcontacts`
 
 export const GET_MESSAGES_ROUTE = `${MESSAGES_ROUTES}/getmessages`
-export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/uploadfile`
+export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/uploadfile`  
 
 export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/creategroup`
+export const ALL_GROUPS_ROUTE = `${GROUP_ROUTES}/getallgroups`
 

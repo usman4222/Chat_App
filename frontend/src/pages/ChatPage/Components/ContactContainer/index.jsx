@@ -3,14 +3,17 @@ import logo from "../../../../assets/images/logo.png";
 import ProfileInfo from "./Components/ProfileInfo";
 import NewDm from "./Components/NewDm";
 import { apiClient } from "../../../../lib/apiClient";
-import { GET_CONTACT_FOR_DM } from "../../../../utils/constants";
+import { ALL_GROUPS_ROUTE, GET_CONTACT_FOR_DM } from "../../../../utils/constants";
 import { appStore } from "../../../../store";
 import ContactList from "../../../../components/ContactList";
 import CreateGroup from "./CreateGroup";
 
 const ContactContainer = () => {
-  const { setDirectMessagesContacts, directMessagesContacts, groups } =
+  const { setDirectMessagesContacts, directMessagesContacts, groups, setGroups } =
     appStore();
+
+    console.log("This si grup",groups);
+    
 
   useEffect(() => {
     const getContacts = async () => {
@@ -24,8 +27,20 @@ const ContactContainer = () => {
       }
     };
 
+    const getGroups = async () => {
+      const res = await apiClient.get(ALL_GROUPS_ROUTE, {
+        withCredentials: true,
+      });
+      console.log("Groups", res);
+
+      if (res.data.groups) {
+        setGroups(res.data.groups);
+      }
+    };
+
     getContacts();
-  }, []);
+    getGroups()
+  }, [setDirectMessagesContacts, setGroups]);
 
   return (
     <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
@@ -43,7 +58,7 @@ const ContactContainer = () => {
       </div>
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">
-          <Title text="Channels" />
+          <Title text="Groups" />
           <CreateGroup />
         </div>
         <div className="max-w-[38vh] overflow-y-auto scrollbar-hidden">
