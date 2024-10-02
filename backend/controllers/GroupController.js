@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/AuthModel.js";
 import Group from "../models/GroupModel.js";
 
@@ -31,5 +32,25 @@ export const createGroup = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send("Internel server error");
+  }
+};
+
+
+
+export const getAllGroups = async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.userId);
+
+    const groups = await Group.find({
+      $or: [
+        { amdin: userId },
+        { members: userId }
+      ]
+    }).sort({ updatedAt: -1 });
+
+    return res.status(201).json({ groups });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Internal server error");
   }
 };
