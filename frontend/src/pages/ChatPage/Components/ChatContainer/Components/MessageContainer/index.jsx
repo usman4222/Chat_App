@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { appStore } from '../../../../../../store';
 import moment from 'moment';
 import { apiClient } from '../../../../../../lib/apiClient';
-import { GET_MESSAGES_ROUTE, HOST } from '../../../../../../utils/constants';
+import { ALL_GROUP_MESSAGES_ROUTE, GET_MESSAGES_ROUTE, HOST } from '../../../../../../utils/constants';
 import { MdFolderZip } from "react-icons/md"
 import { IoMdArrowRoundDown } from "react-icons/io"
 import { IoCloseSharp } from 'react-icons/io5';
@@ -36,11 +36,30 @@ const MessageContainer = () => {
       }
     }
 
+    const getGroupMessages = async () => {
+      try {
+        const res = await apiClient.get(`${ALL_GROUP_MESSAGES_ROUTE}/${selectedChatData._id}`, { withCredentials: true })
+        console.log("All groups message", res);
+
+        if (res.data.messages) {
+          setSelectedChatMessage(res.data.messages)
+        }
+      } catch (error) {
+        console.log({ error });
+
+      }
+    }
+
     if (selectedChatData._id) {
       if (selectedChatType === "contact") {
         getMessages()
       }
+      else if (selectedChatType === "channel") {
+        getGroupMessages()
+      }
     }
+
+
 
   }, [setSelectedChatMessage, selectedChatType, selectedChatData]);
 

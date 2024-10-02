@@ -44,7 +44,7 @@ export const SocketProvider = ({ children }) => {
 
                 if (selectedChatType !== undefined && selectedChatData._id === message.groupId) {
                     addMessage(message)
-                    setMessageCount((prevCount) => prevCount + 1);
+                    // setMessageCount((prevCount) => prevCount + 1);
                     console.log(`Total messages received: ${messageCount + 1}`);
                 }
             }

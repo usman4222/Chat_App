@@ -20,7 +20,7 @@ const groupSchema = new mongoose.Schema({
   messages: [
     {
       type: mongoose.Schema.ObjectId,
-      ref: "Messages",
+      ref: "Message",
       required: false,
     },
   ],

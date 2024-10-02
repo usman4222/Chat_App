@@ -24,4 +24,5 @@ export const UPLOAD_FILE_ROUTE = `${MESSAGES_ROUTES}/uploadfile`
 
 export const CREATE_GROUP_ROUTE = `${GROUP_ROUTES}/creategroup`
 export const ALL_GROUPS_ROUTE = `${GROUP_ROUTES}/getallgroups`
+export const ALL_GROUP_MESSAGES_ROUTE = `${GROUP_ROUTES}/getgroupmessages`
 
