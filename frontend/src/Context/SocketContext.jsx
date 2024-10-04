@@ -12,7 +12,7 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
     const socket = useRef();
     const { userInfo } = appStore();
-    const [messageCount, setMessageCount] = useState(0); 
+    const [messageCount, setMessageCount] = useState(0);
 
     useEffect(() => {
         if (userInfo) {
@@ -26,7 +26,7 @@ export const SocketProvider = ({ children }) => {
 
             const handleReceiveMessage = (message) => {
 
-                const { selectedChatType, selectedChatData, addMessage } = appStore.getState()
+                const { selectedChatType, selectedChatData, addMessage, addContactsInDMContacts } = appStore.getState()
 
                 if (selectedChatType !== undefined &&
                     (selectedChatData._id === message.sender._id ||
@@ -35,18 +35,21 @@ export const SocketProvider = ({ children }) => {
 
                     addMessage(message)
                 }
+                addContactsInDMContacts(message)
 
             }
 
             const handleReceiveGroupMessage = (message) => {
                 console.log("Group message received:", message);
-                const { selectedChatType, selectedChatData, addMessage } = appStore.getState()
+                const { selectedChatType, selectedChatData, addMessage, addGroupInGroupList } = appStore.getState()
 
                 if (selectedChatType !== undefined && selectedChatData._id === message.groupId) {
                     addMessage(message)
+
                     // setMessageCount((prevCount) => prevCount + 1);
                     console.log(`Total messages received: ${messageCount + 1}`);
                 }
+                addGroupInGroupList(message)
             }
 
             socket.current.on("recieveMessage", handleReceiveMessage)
