@@ -9,12 +9,33 @@ const ChatHeader = () => {
     appStore();
   const [selectedColor, setSelectedColor] = useState("defaultColor");
 
-  console.log("Messages", selectedChatMessage);
+  if (!selectedChatData || !selectedChatMessage) return null;
 
-  const userNames = selectedChatMessage.map((message) => {
-    const { firstName, lastName } = message.sender;
-    return `${firstName} ${lastName}`;
-  });
+  const isAdmin = (memberId) => memberId === selectedChatData.admin;
+
+  const renderMemberNames = () => {
+    return selectedChatData.members.map((memberId) => {
+      const memberDetails = selectedChatMessage.find(
+        (msg) => msg.sender._id === memberId
+      );
+
+      const memberName = memberDetails
+        ? `${memberDetails.sender.firstName} ${memberDetails.sender.lastName}`
+        : "Unknown";
+
+      return (
+        <span key={memberId} className="mr-2">
+          {memberName}
+          {isAdmin(memberId) && (
+            <span className="ml-1 text-sm text-blue-500 font-semibold">
+              (Admin)
+            </span>
+          )}
+         {" "} |
+        </span>
+      );
+    });
+  };
 
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex justify-between items-center pc-20">
@@ -52,7 +73,10 @@ const ChatHeader = () => {
               <div>
                 {selectedChatType === "channel" && selectedChatData.name}
               </div>
-              <div>{selectedChatType === "channel" && userNames.join(" | ")}</div>
+
+              <div className="flex">
+                {selectedChatType === "channel" && renderMemberNames()}
+              </div>
             </div>
 
             {selectedChatType === "contact"
@@ -62,7 +86,7 @@ const ChatHeader = () => {
               : selectedChatData.email}
           </div>
         </div>
-        <div className="flex items-center justify-center  gap-5">
+        <div className="flex items-center justify-center gap-5">
           <button
             onClick={closeChat}
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
