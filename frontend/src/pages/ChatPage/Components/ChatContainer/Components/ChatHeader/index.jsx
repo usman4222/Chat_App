@@ -5,8 +5,16 @@ import { HOST } from "../../../../../../utils/constants";
 import { getColor } from "../../../../../../utils/colors";
 
 const ChatHeader = () => {
-  const { closeChat, selectedChatData, selectedChatType } = appStore();
+  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage } =
+    appStore();
   const [selectedColor, setSelectedColor] = useState("defaultColor");
+
+  console.log("Messages", selectedChatMessage);
+
+  const userNames = selectedChatMessage.map((message) => {
+    const { firstName, lastName } = message.sender;
+    return `${firstName} ${lastName}`;
+  });
 
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex justify-between items-center pc-20">
@@ -35,17 +43,24 @@ const ChatHeader = () => {
               )}
             </div>
           ) : (
-            <div className='bg-[#ffffff22] h-10 w-10 rounded-full flex justify-center items-center'>#</div>
+            <div className="bg-[#ffffff22] h-10 w-10 rounded-full flex justify-center items-center">
+              #
+            </div>
           )}
           <div>
-            {selectedChatType === "channel" && selectedChatData.name}
+            <div className="flex flex-col">
+              <div>
+                {selectedChatType === "channel" && selectedChatData.name}
+              </div>
+              <div>{selectedChatType === "channel" && userNames.join(" | ")}</div>
+            </div>
+
             {selectedChatType === "contact"
-              ? (selectedChatData.firstName && selectedChatData.lastName
+              ? selectedChatData.firstName && selectedChatData.lastName
                 ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
-                : selectedChatData.email)
+                : selectedChatData.email
               : selectedChatData.email}
           </div>
-
         </div>
         <div className="flex items-center justify-center  gap-5">
           <button

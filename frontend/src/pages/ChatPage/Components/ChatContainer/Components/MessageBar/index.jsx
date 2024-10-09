@@ -32,7 +32,7 @@ const handleSendMessage = async () => {
     console.log("message");
     if (!socket) {
         console.error("Socket is not available");
-        return; // Exit the function if socket is not available
+        return; 
     }
 
     if (selectedChatType === "contact") {
