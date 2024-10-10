@@ -1,41 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiCloseFill } from "react-icons/ri";
 import { appStore } from "../../../../../../store";
-import { HOST } from "../../../../../../utils/constants";
+import {
+  ALL_GROUP_MEMBERS_ROUTE,
+  HOST,
+} from "../../../../../../utils/constants";
 import { getColor } from "../../../../../../utils/colors";
+import { apiClient } from "../../../../../../lib/apiClient";
 
 const ChatHeader = () => {
-  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage } =
-    appStore();
+  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage } = appStore();
   const [selectedColor, setSelectedColor] = useState("defaultColor");
+  const [adminDetails, setAdminDetails] = useState(null);
+  const [memberDetails, setMemberDetails] = useState([]);
+
 
   if (!selectedChatData || !selectedChatMessage) return null;
 
-  const isAdmin = (memberId) => memberId === selectedChatData.admin;
+  useEffect(() => {
+    const getAllGroupMembers = async () => {
+      try {
+        const res = await apiClient.get(
+          `${ALL_GROUP_MEMBERS_ROUTE}/${selectedChatData._id}`,
+          { withCredentials: true }
+        );
+        
+        const groupMembers = res.data.members || [];
+        const adminId = selectedChatData.admin; 
 
-  const renderMemberNames = () => {
-    return selectedChatData.members.map((memberId) => {
-      const memberDetails = selectedChatMessage.find(
-        (msg) => msg.sender._id === memberId
-      );
+        const admin = res.data.admin;
+        const adminName = admin.firstName && admin.lastName 
+          ? `${admin.firstName} ${admin.lastName}` 
+          : admin.email; 
 
-      const memberName = memberDetails
-        ? `${memberDetails.sender.firstName} ${memberDetails.sender.lastName}`
-        : "Unknown";
+        const members = groupMembers.filter((member) => member._id !== adminId);
+        
+        setAdminDetails(adminName);
+        
+        const formattedMembers = members.map((member) => ({
+          ...member,
+          fullName: member.firstName && member.lastName
+            ? `${member.firstName} ${member.lastName}`
+            : member.email, 
+        }));
 
-      return (
-        <span key={memberId} className="mr-2">
-          {memberName}
-          {isAdmin(memberId) && (
-            <span className="ml-1 text-sm text-blue-500 font-semibold">
-              (Admin)
-            </span>
-          )}
-         {" "} |
-        </span>
-      );
-    });
-  };
+        setMemberDetails(formattedMembers); 
+      } catch (error) {
+        console.error('Error fetching group members:', error);
+      }
+    };
+
+    if (selectedChatType === "channel") {
+      getAllGroupMembers();
+    }
+  }, [selectedChatData, selectedChatType]);
 
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex justify-between items-center pc-20">
@@ -75,7 +93,20 @@ const ChatHeader = () => {
               </div>
 
               <div className="flex">
-                {selectedChatType === "channel" && renderMemberNames()}
+                {selectedChatType === "channel" && (
+                  <div className="text-sm text-neutral-500">
+                    Admin: {adminDetails || "Loading..."}
+                  </div>
+                )}
+
+                {selectedChatType === "channel" && (
+                  <div className="text-sm text-neutral-500 ml-4">
+                    Members:{" "}
+                    {memberDetails.length > 0
+                      ? memberDetails.map((member) => member.fullName).join(", ")
+                      : "Loading..."}
+                  </div>
+                )}
               </div>
             </div>
 
