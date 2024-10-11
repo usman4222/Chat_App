@@ -10,17 +10,24 @@ import { apiClient } from "../../../../../../lib/apiClient";
 import { FaUserPlus, FaUserMinus } from "react-icons/fa";
 import AddNewMember from "../../../ContactContainer/CreateGroup/AddNewMember";
 import RemoveGroupMember from "../../../ContactContainer/CreateGroup/RemoveGroupMember";
+import MemberRemoveConfirmModal from "../../../../../../components/MemberRemoveConfirmModal";
 
 const ChatHeader = () => {
-  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage, userInfo } =
-    appStore();
+  const {
+    closeChat,
+    selectedChatData,
+    selectedChatType,
+    selectedChatMessage,
+    userInfo,
+  } = appStore();
   const [selectedColor, setSelectedColor] = useState("defaultColor");
   const [adminDetails, setAdminDetails] = useState(null);
   const [memberDetails, setMemberDetails] = useState([]);
   const [isAddNewMemberModalOpen, setIsAddNewMemberModalOpen] = useState(false);
   const [openRemoveModal, setOpenRemoveModal] = useState(false);
+  const [openRemoveMemberItselfModal, setOpenRemoveMemberItselfModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const userId = userInfo.id
+  const userId = userInfo.id;
 
   useEffect(() => {
     const getAllGroupMembers = async () => {
@@ -77,6 +84,14 @@ const ChatHeader = () => {
 
   const handleCloseRemoveModal = () => {
     setOpenRemoveModal(false);
+  };
+
+  const handleOpenRemoveMemberItselfModal = () => {
+    setOpenRemoveMemberItselfModal(true);
+  };
+
+  const handleCloseRemoveMemberItselfModal = () => {
+    setOpenRemoveMemberItselfModal(false);
   };
 
   if (!selectedChatData || !selectedChatMessage) return null;
@@ -148,22 +163,34 @@ const ChatHeader = () => {
           </div>
         </div>
         <div className="flex items-center justify-center gap-5">
-          {selectedChatType === "channel" && selectedChatData?.admin === userId && (
-            <>
-              <button
-                className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
-                onClick={openAddNewMemberModal}
-              >
-                <FaUserPlus className="text-3xl" />
-              </button>
-              <button
-                onClick={handleOpenRemoveModal}
-                className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
-              >
-                <FaUserMinus className="text-3xl" />
-              </button>
-            </>
-          )}
+          {selectedChatType === "channel" &&
+            selectedChatData?.admin === userId && (
+              <>
+                <button
+                  className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+                  onClick={openAddNewMemberModal}
+                >
+                  <FaUserPlus className="text-3xl" />
+                </button>
+                <button
+                  onClick={handleOpenRemoveModal}
+                  className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+                >
+                  <FaUserMinus className="text-3xl" />
+                </button>
+              </>
+            )}
+          {selectedChatType === "channel" &&
+            selectedChatData?.admin !== userId && (
+              <>
+                <button
+                  onClick={handleOpenRemoveMemberItselfModal}
+                  className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+                >
+                  <FaUserMinus className="text-3xl" />
+                </button>
+              </>
+            )}
           <button
             onClick={closeChat}
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
@@ -181,6 +208,12 @@ const ChatHeader = () => {
           <RemoveGroupMember
             openModal={openRemoveModal}
             setOpenRemoveMemberModal={handleCloseRemoveModal}
+          />
+        )}
+         {openRemoveMemberItselfModal && (
+          <MemberRemoveConfirmModal
+            openModal={openRemoveMemberItselfModal}
+            setOpenRemoveMemberItselfModal={handleCloseRemoveMemberItselfModal}
           />
         )}
       </div>

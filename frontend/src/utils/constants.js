@@ -28,3 +28,4 @@ export const ALL_GROUP_MESSAGES_ROUTE = `${GROUP_ROUTES}/getgroupmessages`
 export const ALL_GROUP_MEMBERS_ROUTE = `${GROUP_ROUTES}/allgroupmembers`
 export const ADD_NEW_MEMBER_ROUTE = `${GROUP_ROUTES}/addnewmember`
 export const REMOVE_MEMBER_ROUTE = `${GROUP_ROUTES}/removemember`
+export const REMOVE_MEMBER_ITSELF_ROUTE = `${GROUP_ROUTES}/removememberitself`

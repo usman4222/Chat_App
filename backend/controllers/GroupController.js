@@ -37,7 +37,7 @@ export const createGroup = async (req, res) => {
 };
 
 
-export const addNewMemberToGroup = async (req, res) => {
+export const addNewMemberToGroupByAdmin = async (req, res) => {
   try {
     const { groupId, newMemberId } = req.body; 
     const userId = req.userId;  
@@ -71,31 +71,26 @@ export const addNewMemberToGroup = async (req, res) => {
 };
 
 
-export const removeMemberFromGroup = async (req, res) => {
+export const removeMemberFromGroupByAdmin = async (req, res) => {
   try {
-    const { groupId, memberIds } = req.body; // Expecting an array of member IDs to remove
+    const { groupId, memberIds } = req.body;
     const userId = req.userId;
 
-    // Log the incoming request body for debugging
     console.log("Request Body:", req.body);
 
-    // Check if memberIds is defined and is an array
     if (!Array.isArray(memberIds)) {
       return res.status(400).json({ message: "memberIds must be an array." });
     }
 
-    // Fetch the latest group document
     const group = await Group.findById(groupId);
     if (!group) {
       return res.status(404).json({ message: "Group not found." });
     }
 
-    // Check if the requester is the admin
     if (group.admin.toString() !== userId) {
       return res.status(403).json({ message: "Only the group admin can remove members." });
     }
 
-    // Check for members that are actually part of the group
     const invalidMembers = memberIds.filter(memberId => !group.members.includes(memberId));
     if (invalidMembers.length) {
       return res.status(400).json({ 
@@ -104,13 +99,11 @@ export const removeMemberFromGroup = async (req, res) => {
       });
     }
 
-    // Remove members using $pull
     await Group.updateOne(
       { _id: groupId },
-      { $pull: { members: { $in: memberIds } } } // Use $pull with $in to remove multiple members
+      { $pull: { members: { $in: memberIds } } }
     );
 
-    // Fetch updated group data if needed
     const updatedGroup = await Group.findById(groupId);
 
     return res.status(200).json({ message: "Members removed successfully.", group: updatedGroup });
@@ -119,6 +112,45 @@ export const removeMemberFromGroup = async (req, res) => {
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
+
+export const memberRemoveItselfFromGroup = async (req, res) => {
+  try {
+    const { groupId, memberId } = req.body;
+
+    if (!groupId || !memberId) {
+      return res.status(400).json({ message: "Group ID and Member ID are required." });
+    }
+
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
+
+    if (!group.members.includes(memberId)) {
+      return res.status(400).json({ message: "User is not a member of the group." });
+    }
+
+    await Group.updateOne(
+      { _id: groupId },
+      { $pull: { members: memberId } } 
+    );
+
+    const updatedGroup = await Group.findById(groupId);
+
+    return res.status(200).json({
+      message: "You have been removed from the group successfully.",
+      group: updatedGroup,
+    });
+  } catch (error) {
+    console.error("Error removing member from group:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+
+
+
 
 
 
