@@ -7,46 +7,54 @@ import {
 } from "../../../../../../utils/constants";
 import { getColor } from "../../../../../../utils/colors";
 import { apiClient } from "../../../../../../lib/apiClient";
+import { FaUserPlus, FaUserMinus } from "react-icons/fa";
+import AddNewMember from "../../../ContactContainer/CreateGroup/AddNewMember";
+import RemoveGroupMember from "../../../ContactContainer/CreateGroup/RemoveGroupMember";
 
 const ChatHeader = () => {
-  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage } = appStore();
+  const { closeChat, selectedChatData, selectedChatType, selectedChatMessage, userInfo } =
+    appStore();
   const [selectedColor, setSelectedColor] = useState("defaultColor");
   const [adminDetails, setAdminDetails] = useState(null);
   const [memberDetails, setMemberDetails] = useState([]);
-
-
-  if (!selectedChatData || !selectedChatMessage) return null;
+  const [isAddNewMemberModalOpen, setIsAddNewMemberModalOpen] = useState(false);
+  const [openRemoveModal, setOpenRemoveModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const userId = userInfo.id
 
   useEffect(() => {
     const getAllGroupMembers = async () => {
+      setLoading(true);
       try {
         const res = await apiClient.get(
           `${ALL_GROUP_MEMBERS_ROUTE}/${selectedChatData._id}`,
           { withCredentials: true }
         );
-        
-        const groupMembers = res.data.members || [];
-        const adminId = selectedChatData.admin; 
 
+        const groupMembers = res.data.members || [];
+        const adminId = selectedChatData.admin;
         const admin = res.data.admin;
-        const adminName = admin.firstName && admin.lastName 
-          ? `${admin.firstName} ${admin.lastName}` 
-          : admin.email; 
+        const adminName =
+          admin.firstName && admin.lastName
+            ? `${admin.firstName} ${admin.lastName}`
+            : admin.email;
 
         const members = groupMembers.filter((member) => member._id !== adminId);
-        
         setAdminDetails(adminName);
-        
+
         const formattedMembers = members.map((member) => ({
           ...member,
-          fullName: member.firstName && member.lastName
-            ? `${member.firstName} ${member.lastName}`
-            : member.email, 
+          fullName:
+            member.firstName && member.lastName
+              ? `${member.firstName} ${member.lastName}`
+              : member.email,
         }));
 
-        setMemberDetails(formattedMembers); 
+        setMemberDetails(formattedMembers);
       } catch (error) {
-        console.error('Error fetching group members:', error);
+        console.error("Error fetching group members:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -54,6 +62,24 @@ const ChatHeader = () => {
       getAllGroupMembers();
     }
   }, [selectedChatData, selectedChatType]);
+
+  const openAddNewMemberModal = () => {
+    setIsAddNewMemberModalOpen(true);
+  };
+
+  const closeAddNewMemberModal = () => {
+    setIsAddNewMemberModalOpen(false);
+  };
+
+  const handleOpenRemoveModal = () => {
+    setOpenRemoveModal(true);
+  };
+
+  const handleCloseRemoveModal = () => {
+    setOpenRemoveModal(false);
+  };
+
+  if (!selectedChatData || !selectedChatMessage) return null;
 
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex justify-between items-center pc-20">
@@ -75,8 +101,8 @@ const ChatHeader = () => {
                     )}`}
                   >
                     {selectedChatData.firstName
-                      ? selectedChatData.firstName.split("").shift()
-                      : selectedChatData.email.split("").shift()}
+                      ? selectedChatData.firstName.charAt(0)
+                      : selectedChatData.email.charAt(0)}
                   </div>
                 </div>
               )}
@@ -102,9 +128,13 @@ const ChatHeader = () => {
                 {selectedChatType === "channel" && (
                   <div className="text-sm text-neutral-500 ml-4">
                     Members:{" "}
-                    {memberDetails.length > 0
-                      ? memberDetails.map((member) => member.fullName).join(", ")
-                      : "Loading..."}
+                    {loading
+                      ? "Loading..."
+                      : memberDetails.length > 0
+                      ? memberDetails
+                          .map((member) => member.fullName)
+                          .join(", ")
+                      : "No members available."}
                   </div>
                 )}
               </div>
@@ -118,6 +148,22 @@ const ChatHeader = () => {
           </div>
         </div>
         <div className="flex items-center justify-center gap-5">
+          {selectedChatType === "channel" && selectedChatData?.admin === userId && (
+            <>
+              <button
+                className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+                onClick={openAddNewMemberModal}
+              >
+                <FaUserPlus className="text-3xl" />
+              </button>
+              <button
+                onClick={handleOpenRemoveModal}
+                className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+              >
+                <FaUserMinus className="text-3xl" />
+              </button>
+            </>
+          )}
           <button
             onClick={closeChat}
             className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
@@ -125,6 +171,18 @@ const ChatHeader = () => {
             <RiCloseFill className="text-3xl" />
           </button>
         </div>
+        {isAddNewMemberModalOpen && (
+          <AddNewMember
+            openModal={isAddNewMemberModalOpen}
+            setOpenNewMemberModal={closeAddNewMemberModal}
+          />
+        )}
+        {openRemoveModal && (
+          <RemoveGroupMember
+            openModal={openRemoveModal}
+            setOpenRemoveMemberModal={handleCloseRemoveModal}
+          />
+        )}
       </div>
     </div>
   );

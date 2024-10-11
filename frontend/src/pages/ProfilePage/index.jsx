@@ -91,15 +91,13 @@ function ProfilePage() {
     if (file) {
       const formData = new FormData();
       formData.append("profileImage", file);
-  
+
       try {
         const res = await apiClient.post(PROFILE_IMAGE_ROUTE, formData, {
           withCredentials: true,
         });
         if (res.status === 200 && res.data.image) {
-          // Ensure this matches the correct structure returned from your backend
           setUserInfo({ ...userInfo, image: res.data.image });
-          // Update the image URL to reflect the new image
           setImage(`${HOST}/${userInfo.image}`);
           toast.success("Image updated successfully.");
         }
@@ -114,7 +112,6 @@ function ProfilePage() {
       }
     }
   };
-  
 
   const handleDeleteImage = async (e) => {
     try {
@@ -131,11 +128,11 @@ function ProfilePage() {
     }
   };
   return (
-    <div className="bg-green-300 relative flex justify-center items-center w-screen h-screen">
+    <div className=" bg-[#1C1D25] relative flex justify-center items-center w-screen h-screen">
       <ToastContainer />
-      <div className="bg-white shadow-lg min-w-[350px] max-w-[600px] rounded-[14px]">
-        <form onSubmit={profileHandler}>
-          <div className="flex justify-center py-5">
+      <div className="bg-[#292A32] flex flex-row shadow-lg  rounded-[14px]">
+        <form onSubmit={profileHandler} className="flex">
+          <div className="flex flex-col items-center justify-center py-5">
             <div
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
@@ -180,37 +177,39 @@ function ProfilePage() {
                 accept=".png, .jpg, .jpeg, .svg, .webp"
               />
             </div>
+            <h1 className="font-bold border-b border-gray-300 text-[1.1rem] text-center pt-2 px-5 text-white">
+              {userInfo?.email}{" "}
+              <span className="font-normal text-[0.95rem] text-gray-500"></span>
+            </h1>
           </div>
 
-          <h1 className="font-bold border-b border-gray-300 text-[1.1rem] text-center pt-2 px-5">
-          {userInfo?.email}{" "}
-            <span className="font-normal text-[0.95rem] text-gray-500"></span>
-          </h1>
-          <div className="px-10">
-            <div className="font-bold mt-7">First Name:</div>
-            <div className="text-center mt-2">
-              <input
-                type="text"
-                className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+          <div className="flex flex-col items-center  px-5 pb-5">
+            <div className="">
+              <div className="font-bold mt-7 text-white">First Name:</div>
+              <div className="text-center mt-2">
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="">
+              <div className="font-bold mt-7 text-white">Last Name:</div>
+              <div className="text-center mt-2">
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
             </div>
           </div>
-          <div className="px-10">
-            <div className="font-bold mt-7">Last Name:</div>
-            <div className="text-center mt-2">
-              <input
-                type="text"
-                className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="w-full gap-5 flex items-center justify-center pt-10">
+          <div className=" gap-5 flex items-center justify-center pt-10  px-5">
             {colors.map((color, index) => (
               <div
                 className={`${color} h-8 w-8 rounded-full cursor-pointer transition-all duration-300 ${
@@ -223,10 +222,10 @@ function ProfilePage() {
               ></div>
             ))}
           </div>
-          <div className="px-10 py-8">
+          <div className="px-5 py-8 flex justify-center items-center ">
             <button
               type="submit"
-              className="bg-green-400 hover:bg-green-300 text-white font-bold h-10 rounded-lg w-full"
+              className="bg-green-600 hover:bg-green-500 px-3 text-white font-bold h-10 rounded-lg w-full"
             >
               Save Changes
             </button>
