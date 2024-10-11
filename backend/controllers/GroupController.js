@@ -36,11 +36,10 @@ export const createGroup = async (req, res) => {
   }
 };
 
-
 export const addNewMemberToGroupByAdmin = async (req, res) => {
   try {
-    const { groupId, newMemberId } = req.body; 
-    const userId = req.userId;  
+    const { groupId, newMemberId } = req.body;
+    const userId = req.userId;
 
     const group = await Group.findById(groupId);
     if (!group) {
@@ -48,7 +47,9 @@ export const addNewMemberToGroupByAdmin = async (req, res) => {
     }
 
     if (group.admin.toString() !== userId) {
-      return res.status(403).json({ message: "Only the group admin can add members." });
+      return res
+        .status(403)
+        .json({ message: "Only the group admin can add members." });
     }
 
     const newMember = await User.findById(newMemberId);
@@ -57,26 +58,27 @@ export const addNewMemberToGroupByAdmin = async (req, res) => {
     }
 
     if (group.members.includes(newMemberId)) {
-      return res.status(400).json({ message: "User is already a member of the group." });
+      return res
+        .status(400)
+        .json({ message: "User is already a member of the group." });
     }
 
     group.members.push(newMemberId);
     await group.save();
 
-    return res.status(200).json({ message: "New member added successfully.", group });
+    return res
+      .status(200)
+      .json({ message: "New member added successfully.", group });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
 
-
 export const removeMemberFromGroupByAdmin = async (req, res) => {
   try {
     const { groupId, memberIds } = req.body;
     const userId = req.userId;
-
-    console.log("Request Body:", req.body);
 
     if (!Array.isArray(memberIds)) {
       return res.status(400).json({ message: "memberIds must be an array." });
@@ -88,14 +90,18 @@ export const removeMemberFromGroupByAdmin = async (req, res) => {
     }
 
     if (group.admin.toString() !== userId) {
-      return res.status(403).json({ message: "Only the group admin can remove members." });
+      return res
+        .status(403)
+        .json({ message: "Only the group admin can remove members." });
     }
 
-    const invalidMembers = memberIds.filter(memberId => !group.members.includes(memberId));
+    const invalidMembers = memberIds.filter(
+      (memberId) => !group.members.includes(memberId)
+    );
     if (invalidMembers.length) {
-      return res.status(400).json({ 
-        message: "Some users are not members of the group.", 
-        invalidMembers 
+      return res.status(400).json({
+        message: "Some users are not members of the group.",
+        invalidMembers,
       });
     }
 
@@ -106,20 +112,23 @@ export const removeMemberFromGroupByAdmin = async (req, res) => {
 
     const updatedGroup = await Group.findById(groupId);
 
-    return res.status(200).json({ message: "Members removed successfully.", group: updatedGroup });
+    return res
+      .status(200)
+      .json({ message: "Members removed successfully.", group: updatedGroup });
   } catch (error) {
     console.error("Error removing members from group:", error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
 
-
 export const memberRemoveItselfFromGroup = async (req, res) => {
   try {
     const { groupId, memberId } = req.body;
 
     if (!groupId || !memberId) {
-      return res.status(400).json({ message: "Group ID and Member ID are required." });
+      return res
+        .status(400)
+        .json({ message: "Group ID and Member ID are required." });
     }
 
     const group = await Group.findById(groupId);
@@ -128,13 +137,12 @@ export const memberRemoveItselfFromGroup = async (req, res) => {
     }
 
     if (!group.members.includes(memberId)) {
-      return res.status(400).json({ message: "User is not a member of the group." });
+      return res
+        .status(400)
+        .json({ message: "User is not a member of the group." });
     }
 
-    await Group.updateOne(
-      { _id: groupId },
-      { $pull: { members: memberId } } 
-    );
+    await Group.updateOne({ _id: groupId }, { $pull: { members: memberId } });
 
     const updatedGroup = await Group.findById(groupId);
 
@@ -148,41 +156,60 @@ export const memberRemoveItselfFromGroup = async (req, res) => {
   }
 };
 
+export const delGroupByAdmin = async (req, res) => {
+  try {
+    const { groupId } = req.body;
+    const userId = req.userId;
 
+    const group = await Group.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
 
+    if (group.admin.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Only the group admin can delete the group." });
+    }
 
+    await Group.deleteOne({ _id: groupId });
 
-
+    return res.status(200).json({ message: "Group deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting group:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 export const getAllGroupMembers = async (req, res) => {
   try {
     const groupId = req.params.groupId;
     const group = await Group.findById(groupId);
     if (!group) {
-      return res.status(404).json({ message: 'Group not found' });
+      return res.status(404).json({ message: "Group not found" });
     }
 
     const memberIds = group.members;
     const adminId = group.admin;
 
-    const memberObjectIds = memberIds.map(id => new mongoose.Types.ObjectId(id));
+    const memberObjectIds = memberIds.map(
+      (id) => new mongoose.Types.ObjectId(id)
+    );
     const adminObjectId = new mongoose.Types.ObjectId(adminId);
 
-    const users = await User.find({ _id: { $in: [...memberObjectIds, adminObjectId] } });
+    const users = await User.find({
+      _id: { $in: [...memberObjectIds, adminObjectId] },
+    });
 
-
-    const adminData = users.find(user => user._id.equals(adminObjectId));
-    const membersData = users.filter(user => !user._id.equals(adminObjectId));
+    const adminData = users.find((user) => user._id.equals(adminObjectId));
+    const membersData = users.filter((user) => !user._id.equals(adminObjectId));
 
     return res.status(200).json({ admin: adminData, members: membersData });
   } catch (error) {
     console.error(error);
-    return res.status(500).send('Internal server error');
+    return res.status(500).send("Internal server error");
   }
 };
-
-
-
 
 export const getAllGroups = async (req, res) => {
   try {

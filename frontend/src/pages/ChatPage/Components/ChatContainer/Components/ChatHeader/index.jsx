@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RiCloseFill } from "react-icons/ri";
 import { appStore } from "../../../../../../store";
+import { RiDeleteBin6Fill } from "react-icons/ri";
 import {
   ALL_GROUP_MEMBERS_ROUTE,
   HOST,
@@ -11,6 +12,7 @@ import { FaUserPlus, FaUserMinus } from "react-icons/fa";
 import AddNewMember from "../../../ContactContainer/CreateGroup/AddNewMember";
 import RemoveGroupMember from "../../../ContactContainer/CreateGroup/RemoveGroupMember";
 import MemberRemoveConfirmModal from "../../../../../../components/MemberRemoveConfirmModal";
+import DeleteGroupConfirmationModal from "../../../../../../components/DeleteGroupConfirmationModal";
 
 const ChatHeader = () => {
   const {
@@ -25,7 +27,9 @@ const ChatHeader = () => {
   const [memberDetails, setMemberDetails] = useState([]);
   const [isAddNewMemberModalOpen, setIsAddNewMemberModalOpen] = useState(false);
   const [openRemoveModal, setOpenRemoveModal] = useState(false);
-  const [openRemoveMemberItselfModal, setOpenRemoveMemberItselfModal] = useState(false);
+  const [openRemoveMemberItselfModal, setOpenRemoveMemberItselfModal] =
+    useState(false);
+  const [openDelGroupModal, setOpenDelGroupModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const userId = userInfo.id;
 
@@ -92,6 +96,14 @@ const ChatHeader = () => {
 
   const handleCloseRemoveMemberItselfModal = () => {
     setOpenRemoveMemberItselfModal(false);
+  };
+
+  const handleOpenDelGroupModal = () => {
+    setOpenDelGroupModal(true);
+  };
+
+  const handleCloseDelGroupModal = () => {
+    setOpenDelGroupModal(false);
   };
 
   if (!selectedChatData || !selectedChatMessage) return null;
@@ -167,6 +179,12 @@ const ChatHeader = () => {
             selectedChatData?.admin === userId && (
               <>
                 <button
+                  onClick={handleOpenDelGroupModal}
+                  className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+                >
+                  <RiDeleteBin6Fill className="text-3xl" />
+                </button>
+                <button
                   className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
                   onClick={openAddNewMemberModal}
                 >
@@ -210,10 +228,16 @@ const ChatHeader = () => {
             setOpenRemoveMemberModal={handleCloseRemoveModal}
           />
         )}
-         {openRemoveMemberItselfModal && (
+        {openRemoveMemberItselfModal && (
           <MemberRemoveConfirmModal
             openModal={openRemoveMemberItselfModal}
             setOpenRemoveMemberItselfModal={handleCloseRemoveMemberItselfModal}
+          />
+        )}
+        {openDelGroupModal && (
+          <DeleteGroupConfirmationModal
+            openModal={openDelGroupModal}
+            setOpenDelGroupModal={handleCloseDelGroupModal}
           />
         )}
       </div>
