@@ -181,6 +181,112 @@ export const delGroupByAdmin = async (req, res) => {
   }
 };
 
+
+
+export const addNewAdminByAdmin = async (req, res) => {
+  try {
+    const { groupId, newAdminId } = req.body;
+    const currentAdminId = req.userId;
+
+    const group = await Group.findById(groupId);
+
+    if (!group) {
+      return res.status(404).json({ message: "Group not found." });
+    }
+
+    if (group.admin.toString() !== currentAdminId) {
+      return res.status(403).json({
+        message: "Only the current admin can assign a new admin."
+      });
+    }
+
+    if (!group.members.includes(newAdminId)) {
+      return res.status(400).json({
+        message: "The new admin must be a member of the group."
+      });
+    }
+
+    // Update the group's admin to the new admin
+    group.admin = newAdminId;
+    await group.save();
+
+    return res.status(200).json({
+      message: "New admin assigned successfully.",
+      group
+    });
+
+  } catch (error) {
+    console.error("Error assigning new admin:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+// export const addNewAdminByAdmin = async (req, res) => {
+//   try {
+//     const { groupId, newAdminId } = req.body;
+//     const currentAdminId = req.userId;
+
+//     const group = await Group.findById(groupId);
+
+//     if (!group) {
+//       return res.status(404).json({ message: "Group not found." });
+//     }
+
+//     if (group.admin.toString() !== currentAdminId) {
+//       return res.status(403).json({
+//         message: "Only the current admin can assign a new admin."
+//       });
+//     }
+
+//     if (!group.members.includes(newAdminId)) {
+//       return res.status(400).json({
+//         message: "The new admin must be a member of the group."
+//       });
+//     }
+
+//     if (!group.secondaryAdmins) {
+//       group.secondaryAdmins = []; 
+//     }
+
+//     if (group.secondaryAdmins.includes(newAdminId)) {
+//       return res.status(400).json({
+//         message: "This user is already a secondary admin."
+//       });
+//     }
+
+//     group.secondaryAdmins.push(newAdminId);
+//     await group.save();
+
+//     return res.status(200).json({
+//       message: "New admin added successfully.",
+//       group
+//     });
+
+//   } catch (error) {
+//     console.error("Error assigning new admin:", error);
+//     return res.status(500).json({ message: "Internal server error." });
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const getAllGroupMembers = async (req, res) => {
   try {
     const groupId = req.params.groupId;
