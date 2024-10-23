@@ -140,7 +140,6 @@ const NewDm = () => {
                               <span className="text-xs">{contact.email}</span>
                             </p>
                           </div>
-                          {/* Uncomment if you want a Select button */}
                           {/* <button className="text-blue-600 hover:text-blue-500">
               Select
             </button> */}

@@ -13,6 +13,9 @@ import AddNewMember from "../../../ContactContainer/CreateGroup/AddNewMember";
 import RemoveGroupMember from "../../../ContactContainer/CreateGroup/RemoveGroupMember";
 import MemberRemoveConfirmModal from "../../../../../../components/MemberRemoveConfirmModal";
 import DeleteGroupConfirmationModal from "../../../../../../components/DeleteGroupConfirmationModal";
+import { TbReplace } from "react-icons/tb";
+import ChangeAdmin from "../../../ContactContainer/CreateGroup/ChangeAdmin";
+
 
 const ChatHeader = () => {
   const {
@@ -30,6 +33,7 @@ const ChatHeader = () => {
   const [openRemoveMemberItselfModal, setOpenRemoveMemberItselfModal] =
     useState(false);
   const [openDelGroupModal, setOpenDelGroupModal] = useState(false);
+  const [openChangeAdminModal, setOpenChangeAdminModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const userId = userInfo.id;
 
@@ -106,6 +110,14 @@ const ChatHeader = () => {
     setOpenDelGroupModal(false);
   };
 
+  const handleOpenChangeAdminModal = () => {
+    setOpenChangeAdminModal(true);
+  };
+
+  const handleCloseChangeAdminModal = () => {
+    setOpenChangeAdminModal(false);
+  };
+
   if (!selectedChatData || !selectedChatMessage) return null;
 
   return (
@@ -147,8 +159,11 @@ const ChatHeader = () => {
 
               <div className="flex">
                 {selectedChatType === "channel" && (
-                  <div className="text-sm text-neutral-500">
+                  <div className="text-sm text-neutral-500 flex gap-2 items-center">
                     Admin: {adminDetails || "Loading..."}
+                    <div onClick={handleOpenChangeAdminModal}>
+                      <TbReplace className="cursor-pointer hover:text-white duration-300" />
+                    </div>
                   </div>
                 )}
 
@@ -158,10 +173,10 @@ const ChatHeader = () => {
                     {loading
                       ? "Loading..."
                       : memberDetails.length > 0
-                      ? memberDetails
+                        ? memberDetails
                           .map((member) => member.fullName)
                           .join(", ")
-                      : "No members available."}
+                        : "No members available."}
                   </div>
                 )}
               </div>
@@ -238,6 +253,13 @@ const ChatHeader = () => {
           <DeleteGroupConfirmationModal
             openModal={openDelGroupModal}
             setOpenDelGroupModal={handleCloseDelGroupModal}
+          />
+        )}
+        {openChangeAdminModal && (
+          <ChangeAdmin
+            openModal={openChangeAdminModal}
+            setOpenChnageAdminModal={handleCloseChangeAdminModal}
+            
           />
         )}
       </div>

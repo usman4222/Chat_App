@@ -12,8 +12,6 @@ import {
   UPDATE_USER_ROUTE,
 } from "../../utils/constants";
 import { apiClient } from "../../lib/apiClient.js";
-import Avatar from "react-avatar";
-import img from "../../assets/images/image-diabi.png";
 
 function ProfilePage() {
   const [firstName, setFirstName] = useState("");
@@ -24,11 +22,6 @@ function ProfilePage() {
   const { userInfo, setUserInfo } = appStore();
   const navigate = useNavigate();
   const inputRef = useRef();
-
-  // const imageUrl = `${HOST}/uploads/profiles/${userInfo.image}`;
-  // console.log(imageUrl);
-
-  // console.log(profileSetup);
 
   useEffect(() => {
     if (userInfo && userInfo.profileSetup) {

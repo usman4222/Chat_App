@@ -206,7 +206,6 @@ export const addNewAdminByAdmin = async (req, res) => {
       });
     }
 
-    // Update the group's admin to the new admin
     group.admin = newAdminId;
     await group.save();
 
@@ -267,25 +266,6 @@ export const addNewAdminByAdmin = async (req, res) => {
 //     return res.status(500).json({ message: "Internal server error." });
 //   }
 // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const getAllGroupMembers = async (req, res) => {
   try {

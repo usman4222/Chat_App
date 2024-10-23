@@ -30,3 +30,4 @@ export const ADD_NEW_MEMBER_ROUTE = `${GROUP_ROUTES}/addnewmember`
 export const REMOVE_MEMBER_ROUTE = `${GROUP_ROUTES}/removemember`
 export const REMOVE_MEMBER_ITSELF_ROUTE = `${GROUP_ROUTES}/removememberitself`
 export const DELETE_GROUP_BY_ADMIN_ROUTE = `${GROUP_ROUTES}/delgroupbyadmin`
+export const CHANGE_AMDIN_BY_ADMIN_ROUTE = `${GROUP_ROUTES}/addnewadmin`
