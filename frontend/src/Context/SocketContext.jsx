@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { appStore } from "../store";
 import { io } from "socket.io-client";
 import { HOST } from "../utils/constants";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SocketContext = createContext(null);
 
@@ -13,6 +15,7 @@ export const SocketProvider = ({ children }) => {
     const socket = useRef();
     const { userInfo } = appStore();
     const [messageCount, setMessageCount] = useState(0);
+
 
     useEffect(() => {
         if (userInfo) {
@@ -35,6 +38,33 @@ export const SocketProvider = ({ children }) => {
 
                     addMessage(message)
                 }
+
+
+
+                // if (!selectedChatType) {
+                //     console.log("No chat is currently selected.");
+                //     toast.success(`You have received a message from ${message.sender.firstName || message.sender._id}: ${message.content}`,
+                //         {
+                //             closeButton: false, 
+                //             autoClose: 5000, 
+                //         }
+                //     );
+                // }
+                // else if (selectedChatType !== undefined && selectedChatData._id !== message.sender._id && message.sender._id !== userInfo.id) {
+                //     console.log("You have received a message from:", message.sender);
+
+                //     toast.success(`You have received a message from ${message.sender.firstName || message.sender._id}: ${message.content}`,
+                //         {
+                //             closeButton: false, 
+                //             autoClose: 5000, 
+                //         }
+                //     );
+                // }
+                // else if (message.sender._id === userInfo.id) {
+                //     console.log("This message was sent by the current user.");
+                // } else {
+                //     console.log("Message received in the current chat:", message);
+                // }
                 addContactsInDMContacts(message)
 
             }
@@ -62,8 +92,11 @@ export const SocketProvider = ({ children }) => {
     }, [userInfo, messageCount]);
 
     return (
-        <SocketContext.Provider value={socket.current}>
-            {children}
-        </SocketContext.Provider>
+        <>
+            <ToastContainer />
+            <SocketContext.Provider value={socket.current}>
+                {children}
+            </SocketContext.Provider>
+        </>
     );
 };

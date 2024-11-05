@@ -41,6 +41,8 @@ const setupSocket = (server) => {
 
     if (recipientSocketId) {
       io.to(recipientSocketId).emit("recieveMessage", messageData)
+      console.log("you receives a nessage from", senderSocketId);
+      
     }
     if (senderSocketId) {
       io.to(senderSocketId).emit("recieveMessage", messageData)

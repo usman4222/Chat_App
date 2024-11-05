@@ -7,12 +7,13 @@ import { ALL_GROUPS_ROUTE, GET_CONTACT_FOR_DM } from "../../../../utils/constant
 import { appStore } from "../../../../store";
 import ContactList from "../../../../components/ContactList";
 import CreateGroup from "./CreateGroup";
+import { IoNotifications } from "react-icons/io5";
 
 const ContactContainer = () => {
-  const { setDirectMessagesContacts, directMessagesContacts, groups, setGroups } =
+  const { setDirectMessagesContacts, directMessagesContacts, groups, setGroups, messageCount } =
     appStore();
 
-    console.log("This si grup",groups);
+    console.log("messageCount", messageCount);
     
 
   useEffect(() => {
@@ -44,8 +45,16 @@ const ContactContainer = () => {
 
   return (
     <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
-      <div className="pt-3 pl-10">
+      <div className="pt-3 px-10 flex justify-between items-center">
         <img src={logo} alt="logo" />
+        {/* <div className="relative">
+          <IoNotifications className="text-2xl" />
+          {messageCount > 0 && (
+            <span className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {messageCount}
+            </span>
+          )}
+        </div> */}
       </div>
       <div className="my-5">
         <div className="flex items-center justify-between pr-10">

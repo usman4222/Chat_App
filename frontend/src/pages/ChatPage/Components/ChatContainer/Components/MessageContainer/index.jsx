@@ -134,7 +134,6 @@ const MessageContainer = () => {
 
   const renderDMMessages = (message) => {
     const imageUrl = message.fileUrl ? `${HOST}/${message.fileUrl}` : null;
-    console.log("Image URL:", imageUrl);
     return (
       <div
         className={`${

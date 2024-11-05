@@ -8,6 +8,7 @@ export const createChatSlice = (set, get) => ({
   fileUploadingProgress: 0,
   fileDownloadingProgress: 0,
   groups: [],
+  messageCount: 0, 
   setGroups: (groups) => set({ groups }),
   setIsUploading: (isUploading) => set({ isUploading }),
   setIsDownloading: (isDownloading) => set({ isDownloading }),
@@ -29,11 +30,13 @@ export const createChatSlice = (set, get) => ({
       selectedChatData: undefined,
       selectedChatType: undefined,
       selectedChatMessage: [],
+      messageCount: 0,
     }),
 
   addMessage: (message) => {
     const selectedChatMessage = get().selectedChatMessage;
     const selectedChatType = get().selectedChatType;
+    const currentMessageCount = get().messageCount; 
 
     set({
       selectedChatMessage: [
@@ -50,6 +53,7 @@ export const createChatSlice = (set, get) => ({
               : message.sender._id,
         },
       ],
+      messageCount: currentMessageCount + 1, 
     });
   },
 

@@ -161,9 +161,9 @@ const ChatHeader = () => {
                 {selectedChatType === "channel" && (
                   <div className="text-sm text-neutral-500 flex gap-2 items-center">
                     Admin: {adminDetails || "Loading..."}
-                    <div onClick={handleOpenChangeAdminModal}>
+                    {/* <div onClick={handleOpenChangeAdminModal}>
                       <TbReplace className="cursor-pointer hover:text-white duration-300" />
-                    </div>
+                    </div> */}
                   </div>
                 )}
 

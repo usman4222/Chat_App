@@ -30,9 +30,9 @@ const MessageBar = () => {
 
 const handleSendMessage = async () => {
     console.log("message");
-    if (!socket) {
-        console.error("Socket is not available");
-        return; 
+    if (!socket || !socket.emit) {
+      console.error("Socket is not available");
+      return;
     }
 
     if (selectedChatType === "contact") {
