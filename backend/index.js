@@ -22,6 +22,11 @@ app.use(cors({
     credentials: true
 }))
 
+app.get('/api/test', (req, res) => {
+    res.send('Test endpoint is working!');
+});
+
+
 app.use("/uploads/profiles", express.static("uploads/profiles"))
 app.use("/uploads/files", express.static("uploads/files"))
 app.use(cookieParser())
@@ -32,6 +37,12 @@ app.use('/api/user', userRoutes)
 app.use('/api/contacts', contactsRoutes)
 app.use('/api/messages', messagesRoutes)
 app.use('/api/group', groupRoutes)
+
+// Global error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log error details
+    res.status(500).json({ message: "Internal Server Error" }); // Send a response
+});
 
 
 const server = app.listen(PORT, () => {
